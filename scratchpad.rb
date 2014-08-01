@@ -124,18 +124,18 @@ def numerize2(triple)
   tens     = %w(_ _ двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
   hundreds = %W(#{""} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
 
-  h, t, o = padleft!(triple, 3, 0)
+  hun, ten, one = padleft!(triple, 3, 0)
   num = []
-  num << hundreds[h] if h > 0
+  num << hundreds[hun] if hun > 0
 
-  case t
+  case ten
   when 0
-    num << ones[o] if o != 0
+    num << ones[one] if one != 0
   when 1
-    num << teens[o]
+    num << teens[one]
   else
-    num << tens[t]
-    num << ones[o] if o != 0
+    num << tens[ten]
+    num << ones[one] if one != 0
   end
   njoin(num)
 end
@@ -151,7 +151,6 @@ def mega(nums)
 
   nums.each_with_index.map do |num, i|
     place = nums.length - i - 1
-    puts place
 
     # Две хиляди, не два хиляди
     num = 'две' if num == 'два' && place == 1
@@ -191,7 +190,7 @@ def wololo(num)
   groups = join2(groups)
 end
 
-wololo(1000)
+wololo(1231)
 
 wololo(5)
 wololo(15)
