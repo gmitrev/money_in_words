@@ -211,3 +211,13 @@ wololo(2000)
 1.to_money(show_zero_stotinki: true)
 1.01.to_money
 1.5.to_money
+1.53.to_money
+
+0.to_words
+1.to_words
+1.to_words(article: :neuter)
+1.to_words(article: :female)
+11.to_words
+33.to_words
+2000.to_words
+2001.to_words
