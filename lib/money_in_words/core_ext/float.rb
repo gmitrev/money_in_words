@@ -1,5 +1,5 @@
 class Float
-  def to_money
-    MoneyInWords::Money.new(self).to_words
+  def to_money(options={})
+    MoneyInWords::Money.new(self, options).to_words
   end
 end

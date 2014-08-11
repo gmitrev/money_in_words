@@ -4,54 +4,73 @@ module MoneyInWords
 
     attr_accessor :levs, :stotinki
 
+    LEVS = {
+      zero: 'лева',
+      one: 'лев',
+      many: 'лева'
+    }
+
+    STOTINKI = {
+      zero: 'стотинки',
+      one: 'стотинка',
+      many: 'стотинки'
+    }
+
     def initialize(num, options={})
       @num = num
       @levs, @stotinki = split_number
+      @levs = @levs.to_i
+      @stotinki = @stotinki.ljust(2, '0').to_i
+
+      @options = {
+        show_zero_leva: true,
+        show_zero_stotinki: false
+      }.merge(options)
     end
 
     def to_words
-      leva     = to_leva(@levs.to_i)
-      stotinki = to_stotinki(@stotinki.ljust(2, '0').to_i)
-
-      join(leva, stotinki)
+      [leva_to_words, stotinki_to_words].compact.join(" и ")
     end
 
     def split_number
       @num.to_s.split(".")
     end
 
-    def to_leva(num)
-      num.to_words
-    end
-
-    def to_stotinki(num)
-      num.to_words(article: :female)
-    end
-
-    def join(leva, stotinki)
-      leva_str = case @levs.to_i
-                 when 1
-                   'лев'
-                 else
-                   'лева'
-                 end
-
-     stotinki_str = case @stotinki.to_i
-         when 1
-           'стотинка'
-         else
-           'стотинки'
-         end
-
-      if @levs.to_i != 0 && @stotinki.to_i != 0
-        leva + " " + leva_str + " и " + stotinki + " " + stotinki_str
-      elsif @stotinki.to_i == 0
-        leva + " " + leva_str
-      elsif @leva.to_i == 0
-        stotinki + " " + stotinki_str
+    def levs_suffix
+      if @levs == 0
+        LEVS[:zero]
+      elsif @levs == 1
+        LEVS[:one]
+      else
+        LEVS[:many]
       end
     end
 
+    def stotinki_suffix
+      if @stotinki == 0
+        STOTINKI[:zero]
+      elsif @stotinki == 1
+        STOTINKI[:one]
+      else
+        STOTINKI[:many]
+      end
+    end
+
+    def leva_to_words
+      if @levs == 0 && !@options[:show_zero_leva]
+        nil
+      else
+        @levs.to_words + " " + levs_suffix
+      end
+    end
+
+    def stotinki_to_words
+      if @stotinki == 0 && !@options[:show_zero_stotinki]
+        nil
+      else
+        @stotinki.to_words(article: :female) + " " + stotinki_suffix
+      end
+    end
 
   end
 end

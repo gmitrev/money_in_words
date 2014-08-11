@@ -3,7 +3,6 @@ module MoneyInWords
   class Integer
 
     SEPARATOR = ' и '
-    # ONES     = %w(нула един два три четири пет шест седем осем девет)
     ONES  = {
       male:   %w(нула един два три четири пет шест седем осем девет),
       female: %w(нула една две три четири пет шест седем осем девет),
@@ -37,7 +36,6 @@ module MoneyInWords
       num.to_i.to_s.split(//).map(&:to_i).reverse.each_slice(3).to_a.map(&:reverse).reverse
     end
 
-
     def numerize(triple)
       hun, ten, one = padleft!(triple, 3, 0)
       num = []
@@ -63,7 +61,8 @@ module MoneyInWords
 
         # Две хиляди, не два хиляди
         num = 'две' if num == 'два' && place == 1
-        num = 'нула' if num == '' && place == 0 && nums.count == 1
+
+        num = ONES[@article][0] if num == '' && place == 0 && nums.count == 1
 
         if num == ONES[@article][1] && place == 1
           'хиляда'
