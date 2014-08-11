@@ -1,4 +1,5 @@
-require 'pry'
+#encoding: utf-8
+#
 module MoneyInWords
   class Integer
 
