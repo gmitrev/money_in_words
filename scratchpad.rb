@@ -202,3 +202,12 @@ wololo(101)
 wololo(111)
 wololo(121)
 wololo(2000)
+
+
+0.to_money
+0.5.to_money
+0.5.to_money(show_zero_leva: false)
+1.to_money
+1.to_money(show_zero_stotinki: true)
+1.01.to_money
+1.5.to_money

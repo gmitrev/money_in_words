@@ -1,4 +1,3 @@
-require 'pry'
 module MoneyInWords
   class Money
 
@@ -19,6 +18,7 @@ module MoneyInWords
     def initialize(num, options={})
       @num = num
       @levs, @stotinki = split_number
+
       @levs = @levs.to_i
       @stotinki = @stotinki.ljust(2, '0').to_i
 

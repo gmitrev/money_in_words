@@ -1,6 +1,6 @@
-# MoneyInWords
+# Money in Words
 
-TODO: Write a gem description
+Turns numbers into words. The money part is bulgarian only at the time.
 
 ## Installation
 
