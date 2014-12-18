@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Money in Words' do
 
-  describe "Integers" do
+  describe 'Integers' do
 
     describe 'Male' do
       FIXTURES = [
@@ -112,7 +112,7 @@ describe 'Money in Words' do
 
   end
 
-  describe "Money" do
+  describe 'Money' do
 
     FIXTURES = [
       [0, 'нула лева'],
@@ -130,23 +130,26 @@ describe 'Money in Words' do
       it "example #{f.first} " do
         expect(f.first.to_money).to eq f.last
       end
+
+      it "example with BigDecimal #{f.first} " do
+        expect(BigDecimal.new(f.first.to_s).to_money).to eq f.last
+      end
     end
 
-    it "example 3 without stotinki" do
-      expect(3.to_money(show_zero_stotinki: false)).to eq "три лева"
+    it 'example 3 without stotinki' do
+      expect(3.to_money(show_zero_stotinki: false)).to eq 'три лева'
     end
 
-    it "example 3 with stotinki" do
-      expect(3.to_money(show_zero_stotinki: true)).to eq "три лева и нула стотинки"
+    it 'example 3 with stotinki' do
+      expect(3.to_money(show_zero_stotinki: true)).to eq 'три лева и нула стотинки'
     end
 
-    it "example 0.50 with leva" do
-      expect(0.5.to_money(show_zero_leva: true)).to eq "нула лева и петдесет стотинки"
+    it 'example 0.50 with leva' do
+      expect(0.5.to_money(show_zero_leva: true)).to eq 'нула лева и петдесет стотинки'
     end
 
-    it "example 0.50 without leva" do
-      expect(0.5.to_money(show_zero_leva: false)).to eq "петдесет стотинки"
+    it 'example 0.50 without leva' do
+      expect(0.5.to_money(show_zero_leva: false)).to eq 'петдесет стотинки'
     end
-
   end
 end
