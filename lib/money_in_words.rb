@@ -3,6 +3,7 @@ require "money_in_words/integer"
 require "money_in_words/money"
 require "money_in_words/core_ext/integer"
 require "money_in_words/core_ext/float"
+require "money_in_words/core_ext/big_decimal"
 require "money_in_words/version"
 
 module MoneyInWords
