@@ -5,7 +5,7 @@ describe 'Money in Words' do
   describe 'Integers' do
 
     describe 'Male' do
-      FIXTURES = [
+      fixtures = [
         [0, 'нула'],
         [1, 'един'],
         [2, 'два'],
@@ -47,10 +47,10 @@ describe 'Money in Words' do
         [1111, 'хиляда сто и единадесет'],
         [1126, 'хиляда сто двадесет и шест'],
         [2000, 'две хиляди'],
-        [2500, 'две хиляди и петстотин'],
+        [2500, 'две хиляди и петстотин']
       ]
 
-      FIXTURES.each do |f|
+      fixtures.each do |f|
         it "male example #{f.first} " do
           expect(f.first.to_words).to eq f.last
         end
@@ -58,7 +58,7 @@ describe 'Money in Words' do
     end
 
     describe 'Female' do
-      FIXTURES = [
+      fixtures = [
         [0, 'нула'],
         [1, 'една'],
         [2, 'две'],
@@ -100,10 +100,10 @@ describe 'Money in Words' do
         [1111, 'хиляда сто и единадесет'],
         [1126, 'хиляда сто двадесет и шест'],
         [2000, 'две хиляди'],
-        [2500, 'две хиляди и петстотин'],
+        [2500, 'две хиляди и петстотин']
       ]
 
-      FIXTURES.each do |f|
+      fixtures.each do |f|
         it "female example #{f.first} " do
           expect(f.first.to_words(article: :female)).to eq f.last
         end
@@ -114,7 +114,7 @@ describe 'Money in Words' do
 
   describe 'Money' do
 
-    FIXTURES = [
+    fixtures = [
       [0, 'нула лева'],
       [0.5, 'нула лева и петдесет стотинки'],
       [1, 'един лев'],
@@ -123,10 +123,10 @@ describe 'Money in Words' do
       [3.99, 'три лева и деветдесет и девет стотинки'],
       [4.01, 'четири лева и една стотинка'],
       [5.11, 'пет лева и единадесет стотинки'],
-      [2500.08, 'две хиляди и петстотин лева и осем стотинки'],
+      [2500.08, 'две хиляди и петстотин лева и осем стотинки']
     ]
 
-    FIXTURES.each do |f|
+    fixtures.each do |f|
       it "example #{f.first} " do
         expect(f.first.to_money).to eq f.last
       end
