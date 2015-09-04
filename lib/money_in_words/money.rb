@@ -32,6 +32,8 @@ module MoneyInWords
       [leva_to_words, stotinki_to_words].compact.join(' и ')
     end
 
+    private
+
     def split_number
       @num.to_s.split('.')
     end

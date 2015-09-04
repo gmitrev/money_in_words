@@ -27,6 +27,8 @@ module MoneyInWords
       groups.strip
     end
 
+    private
+
     def padleft!(a, n, x)
       a.insert(0, *Array.new([0, n - a.length].max, x))
     end
