@@ -1,8 +1,6 @@
-#encoding: utf-8
-#
+# encoding: utf-8
 module MoneyInWords
-  class Integer
-
+  class Number
     SEPARATOR = ' и '
     ONES  = {
       male:   %w(нула един два три четири пет шест седем осем девет),
@@ -12,9 +10,9 @@ module MoneyInWords
     TEENS    = %w(десет единадесет дванадесет тринадесет четиринадесет петнадесет шестнадесет седемнадесет осемнадесет деветнадесет)
 
     TENS     = %w(_ _ двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
-    HUNDREDS = %W(#{""} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
+    HUNDREDS = %W(#{''} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
 
-    def initialize(num, options={})
+    def initialize(num, options = {})
       @num = num
       @options = options
       @article = options[:article] || :male
@@ -22,7 +20,7 @@ module MoneyInWords
 
     def to_words
       groups = split_number(@num)
-      groups.map!{ |h| numerize(h) }
+      groups.map! { |h| numerize(h) }
       groups = mega(groups)
       groups.reject!(&:blank?)
       groups = mega_join(groups)
@@ -30,7 +28,7 @@ module MoneyInWords
     end
 
     def padleft!(a, n, x)
-      a.insert(0, *Array.new([0, n-a.length].max, x))
+      a.insert(0, *Array.new([0, n - a.length].max, x))
     end
 
     def split_number(num)
@@ -55,7 +53,7 @@ module MoneyInWords
     end
 
     def mega(nums)
-      mega = %W(#{""} хиляди милионa милиарда)
+      mega = %W(#{''} хиляди милионa милиарда)
 
       nums.each_with_index.map do |num, i|
         place = nums.length - i - 1
@@ -73,7 +71,7 @@ module MoneyInWords
       end
     end
 
-    def mega_join(arr, separator=SEPARATOR)
+    def mega_join(arr, separator = SEPARATOR)
       case arr.length
       when 0
         ''
@@ -81,24 +79,22 @@ module MoneyInWords
         arr.first
       else
         if arr.last.include?(SEPARATOR)
-          arr.join(" ")
+          arr.join(' ')
         else
-          arr[0...-1].join(" ") + separator + arr.last.to_s
+          arr[0...-1].join(' ') + separator + arr.last.to_s
         end
       end
-
     end
 
-    def njoin(num, separator=SEPARATOR)
+    def njoin(num, separator = SEPARATOR)
       case num.length
       when 0
         ''
       when 1
         num.first
       else
-        num[0...-1].join(" ") + separator + num.last.to_s
+        num[0...-1].join(' ') + separator + num.last.to_s
       end
     end
-
   end
 end

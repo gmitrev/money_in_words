@@ -1,7 +1,6 @@
-#encoding: utf-8
+# encoding: utf-8
 module MoneyInWords
   class Money
-
     attr_accessor :levs, :stotinki
 
     LEVS = {
@@ -16,7 +15,7 @@ module MoneyInWords
       many: 'стотинки'
     }
 
-    def initialize(num, options={})
+    def initialize(num, options = {})
       @num = num
       @levs, @stotinki = split_number
 
@@ -30,11 +29,11 @@ module MoneyInWords
     end
 
     def to_words
-      [leva_to_words, stotinki_to_words].compact.join(" и ")
+      [leva_to_words, stotinki_to_words].compact.join(' и ')
     end
 
     def split_number
-      @num.to_s.split(".")
+      @num.to_s.split('.')
     end
 
     def levs_suffix
@@ -61,7 +60,7 @@ module MoneyInWords
       if @levs == 0 && !@options[:show_zero_leva]
         nil
       else
-        @levs.to_words + " " + levs_suffix
+        @levs.to_words + ' ' + levs_suffix
       end
     end
 
@@ -69,9 +68,8 @@ module MoneyInWords
       if @stotinki == 0 && !@options[:show_zero_stotinki]
         nil
       else
-        @stotinki.to_words(article: :female) + " " + stotinki_suffix
+        @stotinki.to_words(article: :female) + ' ' + stotinki_suffix
       end
     end
-
   end
 end

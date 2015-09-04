@@ -1,9 +1,9 @@
+# encoding: utf-8
 num = 414.92
 
-def num_to_words num
-
+def num_to_words(num)
   currency = {
-    zero: "лева",
+    zero: 'лева',
     one: 'лев',
     many: 'лева'
   }
@@ -16,20 +16,17 @@ def num_to_words num
   tens = %w(десет двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
   hundreds = %w(сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
   thousands = {
-    one: "хиляда",
+    one: 'хиляда',
     many: 'хиляди'
   }
   millions = {
-    one: "милион",
+    one: 'милион',
     many: 'милиона'
   }
   d = %w(хиляда, милион, милиард, билион)
 
-
-
   levs.to_s.split(//)
 end
-
 
 class String
   BLANK_RE = /\A[[:space:]]*\z/
@@ -51,21 +48,19 @@ class String
   end
 end
 
-
 split_number(1_000_000.0)
 
 def padleft!(a, n, x)
-  a.insert(0, *Array.new([0, n-a.length].max, x))
+  a.insert(0, *Array.new([0, n - a.length].max, x))
 end
+
 def padright!(a, n, x)
   a.fill(x, a.length...n)
 end
 
-
 def split_number(num)
   num.to_i.to_s.split(//).map(&:to_i).reverse.each_slice(3).to_a.map(&:reverse).reverse
 end
-
 
 def numerize(triple)
   base     = %w(нула един два три четири пет шест седем осем девет)
@@ -73,7 +68,7 @@ def numerize(triple)
 
   tens     = %w(_ _ двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
   hundreds = %w(_ сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
-    base[triple.first]
+  base[triple.first]
   separator = ' и '
 
   case triple.size
@@ -93,36 +88,35 @@ def numerize(triple)
       end
     end
   when 3
-    return hundreds[triple.first] if triple.drop(1) == [0,0]
+    return hundreds[triple.first] if triple.drop(1) == [0, 0]
 
     case triple[1]
-    when *[0,1]
+    when *[0, 1]
       hundreds[triple.first] + separator + numerize(triple.drop(1))
     else
-      hundreds[triple.first] + " " + numerize(triple.drop(1))
+      hundreds[triple.first] + ' ' + numerize(triple.drop(1))
     end
   end
-
 end
 
-def njoin(num, separator=' и ')
+def njoin(num, separator = ' и ')
   case num.length
   when 0
     ''
   when 1
     num.first
   else
-    num[0...-1].join(" ") + separator + num.last.to_s
+    num[0...-1].join(' ') + separator + num.last.to_s
   end
 end
-njoin [1,2,3]
+njoin [1, 2, 3]
 
 def numerize2(triple)
   ones     = %w(нула един два три четири пет шест седем осем девет)
   teens    = %w(десет единадесет дванадесет тринадесет четиринадесет петнадесет шестнадесет седемнадесет осемнадесет деветнадесет)
 
   tens     = %w(_ _ двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
-  hundreds = %W(#{""} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
+  hundreds = %W(#{''} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
 
   hun, ten, one = padleft!(triple, 3, 0)
   num = []
@@ -140,14 +134,14 @@ def numerize2(triple)
   njoin(num)
 end
 
-numerize2([1,0,0])
-numerize2([3,3,0])
-numerize2([0,1,1])
-numerize2([0,0,1])
-numerize2([0,6,1])
+numerize2([1, 0, 0])
+numerize2([3, 3, 0])
+numerize2([0, 1, 1])
+numerize2([0, 0, 1])
+numerize2([0, 6, 1])
 
 def mega(nums)
-  mega = %W(#{""} хиляди милионa милиарда)
+  mega = %W(#{''} хиляди милионa милиарда)
 
   nums.each_with_index.map do |num, i|
     place = nums.length - i - 1
@@ -155,36 +149,35 @@ def mega(nums)
     # Две хиляди, не два хиляди
     num = 'две' if num == 'два' && place == 1
     if num == 'един' && place == 1
-    'хиляда'
+      'хиляда'
     else
       "#{num} #{mega[place]}"
     end
   end
 end
 
-def join2(arr, separator=' и ')
+def join2(arr, separator = ' и ')
   case arr.length
   when 0
     ''
   when 1
     arr.first
   else
-    if arr.last.include?(" и ")
-      arr.join(" ")
+    if arr.last.include?(' и ')
+      arr.join(' ')
     else
-      arr[0...-1].join(" ") + separator + arr.last.to_s
+      arr[0...-1].join(' ') + separator + arr.last.to_s
     end
   end
-
 end
 
-mega(["двадесет", "сто"])
-mega(["триста", "двадесет", "сто"])
-join2 mega(["седем", "триста", "двадесет", "сто и седем"])
+mega(%w(двадесет сто))
+mega(%w(триста двадесет сто))
+join2 mega(['седем', 'триста', 'двадесет', 'сто и седем'])
 
 def wololo(num)
   groups = split_number(num)
-  groups.map!{ |h| numerize2(h) }
+  groups.map! { |h| numerize2(h) }
   groups = mega(groups)
   groups.reject!(&:blank?)
   groups = join2(groups)
@@ -202,7 +195,6 @@ wololo(101)
 wololo(111)
 wololo(121)
 wololo(2000)
-
 
 0.to_money
 0.5.to_money
