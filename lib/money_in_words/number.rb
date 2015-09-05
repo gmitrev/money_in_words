@@ -21,14 +21,32 @@ module MoneyInWords
 
     # Transform the number into words
     def to_words
-      groups = split_to_triplets(@number)
-      groups = triplets_to_words(groups)
-      groups = add_scales(groups)
-      groups = remove_blanks(groups)
-      groups = scales_join(groups)
+      postfix_compose(
+        :split_to_triplets,
+        :triplets_to_words,
+        :add_scales,
+        :remove_blanks,
+        :join
+      ).call(@number)
     end
 
     private
+
+    def compose(*methods)
+      postfix_compose(*methods.reverse)
+    end
+
+    def postfix_compose(*methods)
+      lambda do |arg|
+        methods.map! { |m| m.is_a?(Symbol) ? method(m) : m }
+
+        methods.reduce(arg) { |a, f| f.call(a) }
+      end
+    end
+
+    def thread_first(arg, *methods)
+      postfix_compose(methods).call(arg)
+    end
 
     # Transforms the given number into an array of triplets
     # 1       => [[1]]
@@ -122,7 +140,7 @@ module MoneyInWords
     # ['сто двадесет и три'] => 'сто двадесет и три'
     # ! ['хиляда', 'сто'] => 'хиляда и сто'
     # ['сто двадесет и три хиляди', 'триста тридесет и три'] => 'сто двадесет и три хиляди триста тридесет и три'
-    def scales_join(triplets, separator = SEPARATOR)
+    def join(triplets, separator = SEPARATOR)
       case triplets.length
       when 0
         ''

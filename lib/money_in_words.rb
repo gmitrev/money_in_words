@@ -25,3 +25,4 @@ class String
     BLANK_RE === self
   end
 end
+
