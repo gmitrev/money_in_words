@@ -21,10 +21,10 @@ module MoneyInWords
 
     # Transform the number into words
     def to_words
-      groups = split_to_groups(@number)
-      groups.map! { |h| numerize(h) }
+      groups = split_to_triplets(@number)
+      groups = triplets_to_words(groups)
       groups = add_scales(groups)
-      groups.reject!(&:blank?)
+      groups = remove_blanks(groups)
       groups = scales_join(groups)
     end
 
@@ -34,14 +34,19 @@ module MoneyInWords
     # 1       => [[1]]
     # 1413    => [[1], [413]]
     # 244_333 => [[2, 4, 4], [3, 3, 3]]
-    def split_to_groups(num)
+    def split_to_triplets(num)
       num.to_s.split(//).map(&:to_i).reverse.each_slice(3).to_a.map(&:reverse).reverse
+    end
+
+    # Map all triplets to words
+    def triplets_to_words(triplets)
+      triplets.map { |t| triplet_to_words(t) }
     end
 
     # Transforms a triplet into words
     # [5] => 'пет'
     # [3,4,5] => 'триста четиридесет и пет'
-    def numerize(triplet)
+    def triplet_to_words(triplet)
       num = []
       hun, ten, one = padleft(triplet)
 
@@ -107,6 +112,10 @@ module MoneyInWords
           "#{num} #{scales[place]}".strip
         end
       end
+    end
+
+    def remove_blanks(groups)
+      groups.reject(&:blank?)
     end
 
     # Concat all triplets and return the final result
