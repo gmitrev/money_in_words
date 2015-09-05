@@ -12,34 +12,39 @@ module MoneyInWords
     TENS     = %w(_ _ двадесет тридесет четиридесет петдесет шестдесет седемдесет осемдесет деветдесет)
     HUNDREDS = %W(#{''} сто двеста триста четиристотин петстотин шестстоин седемстотин осемстотин деветстотин)
 
-    def initialize(num, options = {})
-      @num = num
-      @options = options
+    # Available options:
+    #   article: :male | :female | :neuter
+    def initialize(number, options = {})
+      @number = number.to_i
       @article = options[:article] || :male
     end
 
+    # Transform the number into words
     def to_words
-      groups = split_number(@num)
+      groups = split_to_groups(@number)
       groups.map! { |h| numerize(h) }
-      groups = mega(groups)
+      groups = add_scales(groups)
       groups.reject!(&:blank?)
-      groups = mega_join(groups)
-      groups.strip
+      groups = scales_join(groups)
     end
 
     private
 
-    def padleft!(a, n, x)
-      a.insert(0, *Array.new([0, n - a.length].max, x))
+    # Transforms the given number into an array of triplets
+    # 1       => [[1]]
+    # 1413    => [[1], [413]]
+    # 244_333 => [[2, 4, 4], [3, 3, 3]]
+    def split_to_groups(num)
+      num.to_s.split(//).map(&:to_i).reverse.each_slice(3).to_a.map(&:reverse).reverse
     end
 
-    def split_number(num)
-      num.to_i.to_s.split(//).map(&:to_i).reverse.each_slice(3).to_a.map(&:reverse).reverse
-    end
-
-    def numerize(triple)
-      hun, ten, one = padleft!(triple, 3, 0)
+    # Transforms a triplet into words
+    # [5] => 'пет'
+    # [3,4,5] => 'триста четиридесет и пет'
+    def numerize(triplet)
       num = []
+      hun, ten, one = padleft(triplet)
+
       num << HUNDREDS[hun] if hun > 0
 
       case ten
@@ -51,51 +56,78 @@ module MoneyInWords
         num << TENS[ten]
         num << ONES[@article][one] if one != 0
       end
-      njoin(num)
+
+      join_triplet(num)
     end
 
-    def mega(nums)
-      mega = %W(#{''} хиляди милионa милиарда)
+    # Pads the triplet with zeroes
+    # []     => [0, 0, 0]
+    # [4]    => [0, 0, 4]
+    # [4, 5] => [0, 4, 5]
+    def padleft(triplet, count = 3, pad_with = 0)
+      pad_size = [0, count - triplet.length].max
 
-      nums.each_with_index.map do |num, i|
-        place = nums.length - i - 1
+      triplet.insert(0, *Array.new(pad_size, pad_with))
+    end
 
+    # Joins the triplet elements with the separator
+    # []                            => ''
+    # ['еднo']                      => 'едно'
+    # ['двадесет', 'две']           => 'двадесет и две'
+    # ['сто', 'тридесет', 'четири'] => 'сто тридесет и четири'
+    def join_triplet(triplet, separator = SEPARATOR)
+      case triplet.length
+      when 0
+        ''
+      when 1
+        triplet.first
+      else
+        triplet[0...-1].join(' ') + separator + triplet.last.to_s
+      end
+    end
+
+    # Add appropriate names to the numbers
+    #  ['сто двадесет и три', 'петнадесет'] => ['сто двадесет и три хиляди', 'петнадесет']
+    def add_scales(nums)
+      scales = %W(#{''} хиляди милионa милиарда билиона билиарда трилиона трилиарда)
+
+      nums.each_with_index.map do |num, index|
+        place = nums.length - index - 1 # determine the index in the 'scales' array
+
+        # Special case for two thousand
         # Две хиляди, не два хиляди
         num = 'две' if num == 'два' && place == 1
 
         num = ONES[@article][0] if num == '' && place == 0 && nums.count == 1
 
         if num == ONES[@article][1] && place == 1
+          # Another special case for one thousand
           'хиляда'
         else
-          "#{num} #{mega[place]}"
+          "#{num} #{scales[place]}".strip
         end
       end
     end
 
-    def mega_join(arr, separator = SEPARATOR)
-      case arr.length
+    # Concat all triplets and return the final result
+    # ['сто двадесет и три'] => 'сто двадесет и три'
+    # ! ['хиляда', 'сто'] => 'хиляда и сто'
+    # ['сто двадесет и три хиляди', 'триста тридесет и три'] => 'сто двадесет и три хиляди триста тридесет и три'
+    def scales_join(triplets, separator = SEPARATOR)
+      case triplets.length
       when 0
         ''
       when 1
-        arr.first
+        triplets.first
       else
-        if arr.last.include?(SEPARATOR)
-          arr.join(' ')
+        # Special case: the separator place in the last triplet
+        # 100_100 => хиляда и сто
+        # 100_101 => хиляда сто и едно
+        if triplets.last.include?(SEPARATOR)
+          triplets.join(' ')
         else
-          arr[0...-1].join(' ') + separator + arr.last.to_s
+          triplets[0...-1].join(' ') + separator + triplets.last
         end
-      end
-    end
-
-    def njoin(num, separator = SEPARATOR)
-      case num.length
-      when 0
-        ''
-      when 1
-        num.first
-      else
-        num[0...-1].join(' ') + separator + num.last.to_s
       end
     end
   end
